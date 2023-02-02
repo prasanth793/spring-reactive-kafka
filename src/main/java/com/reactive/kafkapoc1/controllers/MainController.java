@@ -5,29 +5,21 @@ import com.reactive.kafkapoc1.model.Speaker;
 import com.reactive.kafkapoc1.repos.SessionsRepository;
 import com.reactive.kafkapoc1.repos.SpeakersRepository;
 import com.reactive.kafkapoc1.services.SpeakerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 @RestController("/")
 public class MainController {
 
-    @Autowired
     private SpeakerService speakerService;
-
     private SpeakersRepository speakersRepository;
-
     private SessionsRepository sessionsRepository;
 
-    MainController(SpeakersRepository speakersRepository,SessionsRepository sessionsRepository){
+    MainController(SpeakersRepository speakersRepository,SessionsRepository sessionsRepository,SpeakerService speakerService){
         this.speakersRepository=speakersRepository;
         this.sessionsRepository=sessionsRepository;
+        this.speakerService=speakerService;
     }
 
     @GetMapping("/all")
@@ -41,13 +33,12 @@ public class MainController {
                     return speaker;
                 })
         );
+    }
 
-}
     @GetMapping("/speakers/{id}")
     Mono<Speaker> getSpeakerById(@PathVariable int id){
         return speakerService.findSpeakerAndSessionsBySpeakerId(id);
     }
-
 
     @GetMapping("/sessions/{id}")
     Mono<Session> getSessionById(@PathVariable int id){
