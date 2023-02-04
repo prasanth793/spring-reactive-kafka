@@ -16,6 +16,9 @@ public class SpeakerService {
     @Autowired
     private SessionsRepository sessionsRepository;
 
+    @Autowired
+    private KafkaSender kafkaSender;
+
     public Mono<Speaker> findSpeakerAndSessionsBySpeakerId(int id){
         return speakersRepository.findById(id)
                 .zipWith(sessionsRepository.findSessionsBySpeakerId(id).collectList())
@@ -25,5 +28,10 @@ public class SpeakerService {
                     return updatedSpeaker;
                 })
                 .switchIfEmpty(Mono.empty());
+    }
+
+    public void sendKafkaMessage(Speaker speaker){
+        kafkaSender.sendMessageForSpeaker(speaker);
+
     }
 }

@@ -37,6 +37,7 @@ public class MainController {
 
     @GetMapping("/speakers/{id}")
     Mono<Speaker> getSpeakerById(@PathVariable int id){
+
         return speakerService.findSpeakerAndSessionsBySpeakerId(id);
     }
 
@@ -54,12 +55,30 @@ public class MainController {
 
     @PostMapping("/speakers/create")
     Mono<Speaker> createSpeaker(@RequestBody Speaker speaker){
+        speakerService.sendKafkaMessage(speaker);
        return speakersRepository.save(speaker);
     }
 
     @PostMapping("sessions/create")
     Mono<Speaker> createSession(@RequestBody Session session){
         return sessionsRepository.save(session)
-                .flatMap(session1 -> speakerService.findSpeakerAndSessionsBySpeakerId(session1.getSpeakerId()));
+                .flatMap(session1 -> speakerService.findSpeakerAndSessionsBySpeakerId(session1.getSpeakerId()))
+                .map(speaker -> {
+                    speakerService.sendKafkaMessage(speaker);
+                    return speaker;
+                });
+    }
+
+    @PutMapping("speakers/update")
+    Mono<Speaker> updateSpeaker(@RequestBody Speaker speaker){
+
+        speakerService.sendKafkaMessage(speaker);
+        return speakersRepository.save(speaker);
+    }
+
+    @DeleteMapping("speakers/delete")
+    Mono<Void> deleteSpeaker(@RequestParam Integer id){
+        return speakerService.findSpeakerAndSessionsBySpeakerId(id)
+                .flatMap(speakersRepository::delete);
     }
 }

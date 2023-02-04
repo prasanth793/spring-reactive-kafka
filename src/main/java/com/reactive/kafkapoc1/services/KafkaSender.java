@@ -19,14 +19,13 @@ import org.springframework.stereotype.Service;
             this.kafkaTemplate = kafkaTemplate;
         }
 
-        public String sendMessage(Speaker speaker) {
+        public String sendMessageForSpeaker(Speaker speaker) {
             Message<Speaker> productMessage = MessageBuilder.withPayload(speaker)
                     .setHeader(KafkaHeaders.TOPIC,topicName)
                     .build();
             kafkaTemplate.send(productMessage);
             return "Success";
         }
-
     }
 
 
