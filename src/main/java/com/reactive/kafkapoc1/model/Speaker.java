@@ -1,5 +1,6 @@
 package com.reactive.kafkapoc1.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Table;
@@ -13,11 +14,13 @@ public class Speaker {
 
     @Id
     private int id;
+    @JsonProperty("first")
     private String firstName;
+    @JsonProperty("last")
     private String lastName;
-
+    @JsonProperty("favorite")
     private boolean favourite;
-
+    @JsonProperty("company")
     private String company;
     private String twitterHandle;
 

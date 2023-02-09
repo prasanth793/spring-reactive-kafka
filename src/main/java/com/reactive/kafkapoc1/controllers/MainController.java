@@ -23,6 +23,7 @@ public class MainController {
     }
 
     @GetMapping("/all")
+    @CrossOrigin(origins = "http://localhost:3000")
     Flux<Speaker> getAllSpeakers(){
         var allSpeakers= speakersRepository.findAll();
 
