@@ -1,0 +1,3 @@
+Converting the normal table columns to a nested inner and outer class properties
+parsing nested class in a custom JSON format
+FlatMap and Map differences in Reactive Streaming, especially in Flux

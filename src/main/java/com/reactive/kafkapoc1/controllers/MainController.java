@@ -1,33 +1,38 @@
 package com.reactive.kafkapoc1.controllers;
 
+import com.reactive.kafkapoc1.model.Room;
 import com.reactive.kafkapoc1.model.Session;
 import com.reactive.kafkapoc1.model.Speaker;
 import com.reactive.kafkapoc1.repos.SessionsRepository;
 import com.reactive.kafkapoc1.repos.SpeakersRepository;
+import com.reactive.kafkapoc1.services.SessionService;
 import com.reactive.kafkapoc1.services.SpeakerService;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController("/")
+@CrossOrigin(origins = "http://localhost:3000")
 public class MainController {
 
     private SpeakerService speakerService;
     private SpeakersRepository speakersRepository;
     private SessionsRepository sessionsRepository;
+    private SessionService sessionService;
 
-    MainController(SpeakersRepository speakersRepository,SessionsRepository sessionsRepository,SpeakerService speakerService){
+    MainController(SpeakersRepository speakersRepository,SessionsRepository sessionsRepository,SpeakerService speakerService, SessionService sessionService){
         this.speakersRepository=speakersRepository;
         this.sessionsRepository=sessionsRepository;
         this.speakerService=speakerService;
+        this.sessionService=sessionService;
     }
 
     @GetMapping("/all")
-    @CrossOrigin(origins = "http://localhost:3000")
+
     Flux<Speaker> getAllSpeakers(){
         var allSpeakers= speakersRepository.findAll();
 
-        return allSpeakers.flatMap(speaker -> sessionsRepository.findSessionsBySpeakerId(speaker.getId())
+        return allSpeakers.flatMap(speaker -> sessionService.fetchSessionsByIdAndFormat(speaker.getId())
                 .collectList()
                 .map(sessions -> {
                     speaker.setSessions(sessions);
