@@ -61,7 +61,7 @@ public class MainController {
 
     @PostMapping("/speakers/create")
     Mono<Speaker> createSpeaker(@RequestBody Speaker speaker){
-        speakerService.sendKafkaMessage(speaker);
+     //   speakerService.sendKafkaMessage(speaker);
        return speakersRepository.save(speaker);
     }
 
@@ -78,7 +78,7 @@ public class MainController {
     @PutMapping("speakers/update")
     Mono<Speaker> updateSpeaker(@RequestBody Speaker speaker){
 
-        speakerService.sendKafkaMessage(speaker);
+        // speakerService.sendKafkaMessage(speaker);
         return speakersRepository.save(speaker);
     }
 
